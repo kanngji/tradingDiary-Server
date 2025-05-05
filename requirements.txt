@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+openai
+opencv-python
+requests
+websockets
+python-dotenv
+telethon
