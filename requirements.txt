@@ -6,3 +6,7 @@ requests
 websockets
 python-dotenv
 telethon
+pydantic
+sqlalchemy
+passlib[bcrypt]
+email-validator

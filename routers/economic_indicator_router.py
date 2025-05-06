@@ -5,7 +5,7 @@ import httpx
 
 load_dotenv()
 
-router = APIRouter(prefix="/api/economic-indicators", tags=["economicIndicators"])
+router = APIRouter(prefix="/api/economicIndicators", tags=["economicIndicators"])
 
 FRED_API_KEY = os.getenv("FRED_API_KEY")
 
