@@ -1,9 +1,11 @@
 # main.py
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from routers import economic_indicator_router, telegram_router,longshort_router,signup_router,coinvolume_power_router
 from sqlitedatabase import Base, engine
 from orderbook_fetcher import fetch_binance,fetch_bybit,fetch_upbit,fetch_bithumb
+from clients import clients
+from middlewares.api_logger import log_middleware
 import asyncio
 from routers.coinvolume_power_router import (
     collect_binance_trades,
@@ -13,6 +15,9 @@ from routers.coinvolume_power_router import (
 )
 
 app = FastAPI()  # ✅ 이게 꼭 있어야 함!
+
+# ✅ logger 미들웨어 추가
+app.middleware("http")(log_middleware)
 
 app.add_middleware(
     CORSMiddleware,
@@ -37,6 +42,18 @@ app.include_router(coinvolume_power_router.router)
 @app.get("/")
 def main():
     return {"message": "FastAPI 서버가 정상 작동 중입니다!"}
+
+@app.websocket("/ws/client")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    clients.append(websocket)
+    try:
+        while True:
+            await asyncio.sleep(1)  # 연결 유지
+    except:
+        clients.remove(websocket)
+
+
 
 
 @app.on_event("startup")

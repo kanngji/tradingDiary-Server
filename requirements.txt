@@ -10,3 +10,4 @@ pydantic
 sqlalchemy
 passlib[bcrypt]
 email-validator
+motor

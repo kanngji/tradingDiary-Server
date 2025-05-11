@@ -3,8 +3,23 @@ from fastapi import APIRouter
 import websockets
 import asyncio
 import time
-
+from clients import clients
 MAX_TRADES = 100
+
+async def broadcast_to_clients(source, trade):
+    data = {
+        "exchange": source,
+        "trade": trade
+    }
+    disconnected_clients = []
+    for client in clients:
+        try:
+            await client.send_json(data)
+        except:
+            disconnected_clients.append(client)
+    for client in disconnected_clients:
+        clients.remove(client)
+
 
 # 🔵 거래소별 체결 데이터 저장소
 binance_trades = []
@@ -29,6 +44,7 @@ async def collect_binance_trades():
             binance_trades.append(trade)
             if len(binance_trades) > MAX_TRADES:
                 binance_trades.pop(0)
+            await broadcast_to_clients("binance", trade)
 
 # ✅ Bybit 실시간 체결 수집기
 async def collect_bybit_trades():
@@ -52,6 +68,7 @@ async def collect_bybit_trades():
                     bybit_trades.append(trade)
                     if len(bybit_trades) > MAX_TRADES:
                         bybit_trades.pop(0)
+                    await broadcast_to_clients("bybit", trade)   # 이 줄 추가!!
 
 async def collect_upbit_trades():
     url = "wss://api.upbit.com/websocket/v1"
@@ -76,6 +93,7 @@ async def collect_upbit_trades():
             upbit_trades.append(trade)
             if len(upbit_trades) > MAX_TRADES:
                 upbit_trades.pop(0)
+            await broadcast_to_clients("upbit", trade)
 
 async def collect_bithumb_trades():
     url = "wss://pubwss.bithumb.com/pub/ws"
@@ -103,6 +121,7 @@ async def collect_bithumb_trades():
                     bithumb_trades.append(trade)
                     if len(bithumb_trades) > MAX_TRADES:
                         bithumb_trades.pop(0)
+                    await broadcast_to_clients("bithumb", trade) 
 
 # ✅ 외부 접근용 getter
 
