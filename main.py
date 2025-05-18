@@ -1,7 +1,7 @@
 # main.py
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from routers import economic_indicator_router, telegram_router,longshort_router,signup_router,coinvolume_power_router
+from routers import economic_indicator_router, telegram_router,longshort_router,signup_router,coinvolume_power_router,login_router,calendar_router
 from sqlitedatabase import Base, engine
 from orderbook_fetcher import fetch_binance,fetch_bybit,fetch_upbit,fetch_bithumb
 from clients import clients
@@ -21,7 +21,7 @@ app.middleware("http")(log_middleware)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://192.168.0.6:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,6 +36,8 @@ app.include_router(longshort_router.router)
 app.include_router(economic_indicator_router.router)
 app.include_router(signup_router.router)
 app.include_router(coinvolume_power_router.router)
+app.include_router(login_router.router)
+app.include_router(calendar_router.router)
 
 
 
