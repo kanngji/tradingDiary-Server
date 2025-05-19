@@ -11,6 +11,7 @@ sqlalchemy
 passlib[bcrypt]
 email-validator
 motor
-pyodbc
+
 pyJWT
 bcrypt==3.2.2
+pymysql

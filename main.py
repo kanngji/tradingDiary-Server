@@ -21,7 +21,7 @@ app.middleware("http")(log_middleware)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://192.168.0.6:3000"],
+    allow_origins=["http://52.64.220.18:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
